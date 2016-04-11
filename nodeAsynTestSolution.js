@@ -28,7 +28,9 @@ try {
 // This first function is to illustrate the async series
 function firstFunction(callback) {
   console.log("this is the first function");
-  callback(null, 'firstFunction was called');
+  setTimeout(function() {
+    callback(null, 'firstFunction was called');
+  }, 0);
 }
 
 
@@ -45,9 +47,10 @@ function secondFunction(callback) {
     .then(cleanResults)
     .catch(function(err){
       console.log("This error occured in the promise chain: " + err);
-      return_object.errors.push('Second function call broke')
-      callback(null, return_object);
-      return;
+      return_object.errors.push('Second function call broke');
+      setTimeout(function() {
+        callback(null, return_object);
+      }, 0);
     });
 
   // connect to some database
@@ -63,7 +66,9 @@ function secondFunction(callback) {
         callback: callback
       }
       console.log(resolve_object);
-      resolve(resolve_object);
+      setTimeout(function(){
+        resolve(resolve_object);
+      }, 0);
     })
   }
 
@@ -76,7 +81,9 @@ function secondFunction(callback) {
         callback: callback
       }
       var results = ['row1', 'row2']
-      resolve(resolve_object);
+      setTimeout(function(){
+        resolve(resolve_object);
+      }, 0);
     })
   }
 
@@ -87,15 +94,19 @@ function secondFunction(callback) {
       console.log(results);
       // this should move into the catch statement
       // console.log(breakingCall);
-      resolve(results)
-    })
+      setTimeout(function(){
+        resolve(results)
+      }, 0);
+    });
   }
 
   // function won't be called simply comment out the above consolelog for this to resolve.
   function cleanResults(results) {
       console.log(results.connection);
       return_object.results.push('Everything went fine heres some results')
-      callback(null, 'some results from the second function');
+      setTimeout(function(){
+        callback(null, 'some results from the second function');
+      }, 0);
   }
 
 }
@@ -103,6 +114,7 @@ function secondFunction(callback) {
 function thirdFunction(callback) {
     console.log("this is the third function");
     console.log(catchThis);
-    callback('error from third function', 'thirdFunction was called');
-    return;
+    setTimeout(function(){
+        callback('error from third function', 'thirdFunction was called');
+    }, 0);
 }
