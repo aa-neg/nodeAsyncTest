@@ -1,19 +1,23 @@
 var async = require("async");
 var promise = require("promise");
 
+
 try {
   async.series({
-    firstCall: function(callback) {
+    componentOne: function(callback) {
       firstFunction(callback);
     },
-    secondCall: function(callback) {
+    componentTwo: function(callback) {
       secondFunction(callback);
+    },
+    componentThree: function(callback) {
+      thirdFunction(callback);
     }
   },
-  function(err, results){
+  function(err, components){
     console.log(err);
-    console.log("this is the results")
-    console.log(results);
+    console.log("These are the components")
+    console.log(components);
   })
 } catch(err) {
   console.log("The outer scope error");
@@ -23,11 +27,16 @@ try {
 // This first function is to illustrate the async series
 function firstFunction(callback) {
   console.log("this is the first function");
-  callback(null, 'FirstFunction was called');
+  callback(null, 'firstFunction was called');
 }
 
 
 function secondFunction(callback) {
+
+  var return_object = {
+    results: [],
+    errors: []
+  }
 
   databaseConnection('some credentails')
     .then(executeQuery)
@@ -35,7 +44,8 @@ function secondFunction(callback) {
     .then(cleanResults)
     .catch(function(err){
       console.log("This error occured in the promise chain: " + err);
-      callback(null, 'Second function called');
+      return_object.errors.push('Second function call broke')
+      callback(null, return_object);
     });
 
   // connect to some database
@@ -64,10 +74,18 @@ function secondFunction(callback) {
     })
   }
 
+  // function won't be called simply comment out the above consolelog for this to resolve.
   function cleanResults(results) {
     return new Promise(function(resolve, reject){
       resolve(results);
+      return_object.results.push('Everything went fine heres some results')
+      callback(null, return_object);
     })
   }
 
+}
+
+function thirdFunction(results) {
+  console.log("this is the third function");
+  callback(null, 'thirdFunction was called');
 }
